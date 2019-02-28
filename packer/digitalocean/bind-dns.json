@@ -1,0 +1,52 @@
+{
+  "variables": {
+    "source_image": ""
+  },
+
+  "builders": [{
+    "type": "digitalocean",
+    "snapshot_name": "dns-packer-{{timestamp}}",
+    "api_token": "SUPER SECRET",
+    "region": "nyc3",
+    "size": "s-1vcpu-1gb",
+    "image": "{{user `source_image`}}",
+    "private_networking": true,
+    "ssh_username": "root"
+  }],
+
+  "provisioners": [
+    {
+      "type": "file",
+      "source": "files/bind/named.conf.local",
+      "destination": "/tmp/named.conf.local"
+    },
+    {
+      "type": "file",
+      "source": "files/bind/named.conf.options",
+      "destination": "/tmp/named.conf.options"
+    },
+    {
+      "type": "file",
+      "source": "files/bind/zones/db.int.do.ddreier.com",
+      "destination": "/tmp/db.int.do.ddreier.com"
+    },
+    {
+      "type": "file",
+      "source": "files/bind/zones/db.132.10",
+      "destination": "/tmp/db.132.10"
+    },
+    {
+      "type": "shell",
+      "scripts": [
+        "scripts/install-bind.sh"
+      ]
+    }
+  ],
+
+  "post-processors": [
+    {
+      "type": "manifest",
+      "output": "dns.manifest"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "server": true,
+  "ui": true,
+  "bootstrap_expect": 3,
+  "data_dir": "/var/consul",
+  "log_level": "INFO",
+  "enable_syslog": true,
+  "domain": "consul",
+  "retry_join": [
+    "provider=aws access_key_id=SUPER SECRET secret_access_key=SUPER SECRET tag_key=consul-join tag_value=consul-join"
+  ]
+}

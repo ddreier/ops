@@ -1,0 +1,44 @@
+{
+  "variables": {
+    "source_image": "",
+    "image_name": "consul-server"
+  },
+
+  "builders": [{
+    "type": "digitalocean",
+    "snapshot_name": "{{user `image_name`}}-packer-{{timestamp}}",
+    "api_token": "SUPER SECRET",
+    "region": "nyc3",
+    "size": "s-1vcpu-1gb",
+    "image": "{{user `source_image`}}",
+    "private_networking": true,
+    "ssh_username": "root"
+  }],
+
+  "provisioners": [
+    {
+      "type": "file",
+      "source": "files/consul-server-config.json",
+      "destination": "/tmp/consul.json"
+    },
+    {
+      "type": "file",
+      "source": "files/consul.service",
+      "destination": "/tmp/consul.service"
+    },
+    {
+      "type": "shell",
+      "scripts": [
+        "scripts/get-hashi-binaries.sh",
+        "scripts/install-consul-server.sh"
+      ]
+    }
+  ],
+
+  "post-processors": [
+    {
+      "type": "manifest",
+      "output": "{{user `image_name`}}.manifest"
+    }
+  ]
+}

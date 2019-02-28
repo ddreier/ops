@@ -1,0 +1,44 @@
+{
+  "variables": {
+    "aws_access_key": "SUPER SECRET",
+    "aws_secret_key": "SUPER SECRET"
+  },
+  "builders": [{
+    "type": "amazon-ebs",
+    "access_key": "{{user `aws_access_key`}}",
+    "secret_key": "{{user `aws_secret_key`}}",
+    "region": "us-east-1",
+    "source_ami_filter": {
+      "most_recent": true,
+      "filters": {
+        "name": "base packer-*"
+      },
+      "owners": [ "self" ]
+    },
+    "instance_type": "t2.micro",
+    "ssh_username": "ubuntu",
+    "ami_name": "rabbitmq packer-{{timestamp}}"
+  }],
+
+  "provisioners": [
+    {
+      "type": "shell",
+      "inline": [
+        "sleep 15"
+      ]
+    },
+    {
+      "type": "shell",
+      "scripts": [
+        "scripts/install-rabbitmq.sh"
+      ]
+    }
+  ],
+
+  "post-processors": [
+    {
+      "type": "manifest",
+      "output": "rabbitmq.manifest"
+    }
+  ]
+}

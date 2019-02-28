@@ -1,0 +1,45 @@
+{
+  "builders": [{
+    "type": "digitalocean",
+    "snapshot_name": "base-ubuntu-1804-packer-{{timestamp}}",
+    "api_token": "SUPER SECRET",
+    "region": "nyc3",
+    "size": "s-1vcpu-1gb",
+    "image": "ubuntu-18-04-x64",
+    "private_networking": true,
+    "ssh_username": "root"
+  }],
+
+  "provisioners": [
+    {
+      "type": "shell",
+      "inline": [
+        "sleep 30",
+        "apt-get update -q",
+        "DEBIAN_FRONTEND=noninteractive apt-get upgrade -yq",
+        "apt-get install -yq zip unzip nmon htop git",
+        "ufw allow ssh",
+        "ufw --force enable",
+        "sed -i 's/1/0/g' /etc/apt/apt.conf.d/20auto-upgrades",
+        "sed -i 's/1/0/g' /etc/apt/apt.conf.d/10periodic",
+        "rm /etc/cron.daily/apt-compat"
+      ]
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "useradd -d /home/ddreier -m -s /bin/bash -UG sudo ddreier",
+        "echo ddreier:r00tr00t | chpasswd",
+        "passwd -e ddreier"
+      ]
+    }
+  ],
+
+
+  "post-processors": [
+    {
+      "type": "manifest",
+      "output": "base-ubuntu-1804.manifest"
+    }
+  ]
+}

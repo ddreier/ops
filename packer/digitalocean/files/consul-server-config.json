@@ -1,0 +1,16 @@
+{
+  "server": true,
+  "ui": true,
+  "bootstrap_expect": 3,
+  "bind_addr": "{{ GetInterfaceIP \"eth1\" }}",
+  "client_addr": "127.0.0.1 {{ GetInterfaceIP \"eth1\" }}",
+  "data_dir": "/var/consul",
+  "log_level": "INFO",
+  "enable_syslog": true,
+  "domain": "consul",
+  "retry_join": [
+    "consul-000.int.do.ddreier.com",
+    "consul-001.int.do.ddreier.com",
+    "consul-002.int.do.ddreier.com"
+  ]
+}

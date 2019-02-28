@@ -1,0 +1,32 @@
+{
+  "variables": {
+    "source_image": ""
+  },
+
+  "builders": [{
+    "type": "digitalocean",
+    "snapshot_name": "bastion-packer-{{timestamp}}",
+    "api_token": "SUPER SECRET",
+    "region": "nyc3",
+    "size": "s-1vcpu-1gb",
+    "image": "{{user `source_image`}}",
+    "private_networking": true,
+    "ssh_username": "root"
+  }],
+
+  "provisioners": [
+    {
+      "type": "shell",
+      "scripts": [
+        "scripts/get-hashi-binaries.sh"
+      ]
+    }
+  ],
+
+  "post-processors": [
+    {
+      "type": "manifest",
+      "output": "bastion.manifest"
+    }
+  ]
+}
